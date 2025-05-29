@@ -79,8 +79,8 @@ export default {
     return {
       fields: [
         { key: 'title', label: 'Title', sortable: true },
-        { key: 'slug', label: 'URL', sortable: true },
-        { key: 'updatedAt', label: 'Last Updated', sortable: true },
+        { key: 'slug', label: 'Slug', sortable: true },
+        { key: 'keywords', label: 'SEO keywords', sortable: true },
         { key: 'actions', label: 'Actions' }
       ],
       showDeleteModal: false,
