@@ -1,10 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import axios from 'axios'
+import { pageAPI } from '@/http'
 
 Vue.use(Vuex)
-
-const API_URL = 'http://localhost:3000/pages'
 
 export default new Vuex.Store({
   state: {
@@ -34,7 +32,7 @@ export default new Vuex.Store({
   actions: {
     async fetchPages({ commit }) {
       try {
-        const response = await axios.get(API_URL)
+        const response = await pageAPI.getAll()
         commit('SET_PAGES', response.data)
       } catch (error) {
         console.error('Error fetching pages:', error)
@@ -43,15 +41,13 @@ export default new Vuex.Store({
     },
     async fetchPageById({ state, commit }, id) {
       try {
-        // First check in our store
         let page = state.pages.find(p => p.id === id)
         if (page) {
           commit('SET_CURRENT_PAGE', page)
           return page
         }
 
-        // If not found in store, fetch from API
-        const response = await axios.get(`${API_URL}/${id}`)
+        const response = await pageAPI.getById(id)
         page = response.data
         if (page) {
           commit('SET_CURRENT_PAGE', page)
@@ -64,15 +60,13 @@ export default new Vuex.Store({
     },
     async fetchPageBySlug({ state, commit }, slug) {
       try {
-        // First check in our store
         let page = state.pages.find(p => p.slug === slug)
         if (page) {
           commit('SET_CURRENT_PAGE', page)
           return page
         }
 
-        // If not found in store, fetch from API
-        const response = await axios.get(`${API_URL}?slug=${slug}`)
+        const response = await pageAPI.getBySlug(slug)
         page = response.data[0]
         if (page) {
           commit('SET_CURRENT_PAGE', page)
@@ -85,12 +79,7 @@ export default new Vuex.Store({
     },
     async createPage({ commit }, pageData) {
       try {
-        const data = {
-          ...pageData,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
-        }
-        const response = await axios.post(API_URL, data)
+        const response = await pageAPI.create(pageData)
         commit('ADD_PAGE', response.data)
         return response.data
       } catch (error) {
@@ -100,11 +89,7 @@ export default new Vuex.Store({
     },
     async updatePage({ commit }, { id, pageData }) {
       try {
-        const data = {
-          ...pageData,
-          updatedAt: new Date().toISOString()
-        }
-        const response = await axios.put(`${API_URL}/${id}`, data)
+        const response = await pageAPI.update(id, pageData)
         commit('UPDATE_PAGE', response.data)
         return response.data
       } catch (error) {
@@ -114,7 +99,7 @@ export default new Vuex.Store({
     },
     async deletePage({ commit }, id) {
       try {
-        await axios.delete(`${API_URL}/${id}`)
+        await pageAPI.delete(id)
         commit('DELETE_PAGE', id)
       } catch (error) {
         console.error('Error deleting page:', error)

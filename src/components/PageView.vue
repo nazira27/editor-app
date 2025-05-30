@@ -41,28 +41,12 @@ export default {
       }
     },
     updateMetaTags() {
-      // Update keywords meta tag
       let metaKeywords = document.querySelector('meta[name="keywords"]')
       if (!metaKeywords) {
         metaKeywords = document.createElement('meta')
         metaKeywords.setAttribute('name', 'keywords')
         document.head.appendChild(metaKeywords)
       }
-      metaKeywords.setAttribute('content', this.page.keywords || '')
-
-      // Update description meta tag
-      let metaDescription = document.querySelector('meta[name="description"]')
-      if (!metaDescription) {
-        metaDescription = document.createElement('meta')
-        metaDescription.setAttribute('name', 'description')
-        document.head.appendChild(metaDescription)
-      }
-      // Use the first 160 characters of the content as description
-      const description = this.page.content
-        .replace(/<[^>]*>/g, '') // Remove HTML tags
-        .slice(0, 160)
-        .trim()
-      metaDescription.setAttribute('content', description)
     }
   },
   watch: {
